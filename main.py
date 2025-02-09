@@ -51,4 +51,4 @@ def top_names(amount, should_upload, should_schedule):
                 mark_uploaded(cur_girl)
 
 if __name__ == "__main__":
-    top_names(50, True,True)
+    top_names(1, True,True)

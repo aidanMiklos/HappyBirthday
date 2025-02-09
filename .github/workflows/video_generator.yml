@@ -3,7 +3,7 @@ name: Video Generation Script
 on:
   workflow_dispatch:  # Allows manual execution
   schedule:
-    - cron: "0 3 * * *"  # Runs daily at 3 AM UTC (modify as needed)
+    - cron: "0 */4 * * *"  # Runs every 4 hours (6 times a day)
 
 jobs:
   run_script:
