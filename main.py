@@ -37,18 +37,22 @@ def top_names(amount, should_upload, should_schedule):
     boy_names = csv_to_array('names/boy_names_2023.csv')
     girl_names = csv_to_array('names/girl_names_2023.csv')
     
-    for i in range(amount):
-        cur_boy = boy_names[i]
-        if not is_uploaded(cur_boy):
-            generate_video(cur_boy, should_upload,should_schedule)
-            if(should_upload):
-                mark_uploaded(cur_boy)
-        
-        cur_girl = girl_names[i]
-        if not is_uploaded(cur_girl):
-            generate_video(cur_girl, should_upload,should_schedule)
-            if(should_upload):
-                mark_uploaded(cur_girl)
-
+    # Combine boy and girl names and initialize an empty list to hold names to process
+    all_names = boy_names + girl_names
+    names_to_process = []
+    
+    # Loop through the combined list and add unuploaded names until the desired amount is reached
+    for name in all_names:
+        if not is_uploaded(name):
+            names_to_process.append(name)
+        if len(names_to_process) == amount:
+            break
+    
+    # Now, process the names that need uploading
+    for name in names_to_process:
+        generate_video(name, should_upload, should_schedule)
+        if should_upload:
+            mark_uploaded(name)
+            
 if __name__ == "__main__":
     top_names(1, True,True)
