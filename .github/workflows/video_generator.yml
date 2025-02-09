@@ -27,6 +27,14 @@ jobs:
         with:
           ffmpeg-version: 'release'  # You can specify a version like '4.4' or '5.0'
 
+      - name: Set up client_secrets.json
+        run: |
+            echo "${{ secrets.CLIENT_SECRETS_JSON }}" > client_secrets.json
+
+      - name: Decode token.pickle
+        run: |
+              echo "${{ secrets.TOKEN_PICKLE_B64 }}" | base64 --decode > token.pickle
+
       - name: Inject API Keys
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}  # Load from GitHub Secrets
