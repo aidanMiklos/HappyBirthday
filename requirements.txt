@@ -1,0 +1,8 @@
+opencv-python
+vidgear
+moviepy
+requests
+google-auth
+google-auth-oauthlib
+google-api-python-client
+Pillow
