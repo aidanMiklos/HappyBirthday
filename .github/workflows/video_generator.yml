@@ -25,7 +25,7 @@ jobs:
       - name: Inject API Keys
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}  # Load from GitHub Secrets
-        run: python your_script.py  # Replace with your script filename
+        run: python main.py  # Replace with your script filename
 
       - name: Upload Generated Audio Files (Optional)
         uses: actions/upload-artifact@v4
