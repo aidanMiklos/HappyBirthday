@@ -29,8 +29,10 @@ jobs:
 
       - name: Set up client_secrets.json
         run: |
-            echo "${{ secrets.CLIENT_SECRETS_JSON }}" > client_secrets.json
-            
+            cat <<EOF > client_secrets.json
+            ${{ secrets.CLIENT_SECRETS_JSON }}
+            EOF
+
       - name: Output client_secrets.json
         run: cat client_secrets.json
 
