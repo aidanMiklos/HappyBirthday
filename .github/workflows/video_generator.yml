@@ -30,6 +30,9 @@ jobs:
       - name: Set up client_secrets.json
         run: |
             echo "${{ secrets.CLIENT_SECRETS_JSON }}" > client_secrets.json
+            
+      - name: Output client_secrets.json
+        run: cat client_secrets.json
 
       - name: Decode token.pickle
         run: |
