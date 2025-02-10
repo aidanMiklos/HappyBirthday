@@ -30,7 +30,7 @@ jobs:
       - name: Set up client_secrets.json
         run: |
             cat <<EOF > client_secrets.json
-            ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+            ${{ secrets.CLIENT_SECRETS_JSON }}
             EOF
 
       - name: Output client_secrets.json

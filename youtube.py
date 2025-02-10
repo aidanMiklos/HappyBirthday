@@ -1,18 +1,14 @@
 import os
+import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 import googleapiclient.http
 from PIL import Image
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
+import pickle
 
-# Define the API service name and version
-API_SERVICE_NAME = 'youtube'
-API_VERSION = 'v3'
-
-# Define the scopes required for the API
-SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
-
+TOKEN_FILE = "token.pickle"
+SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+CLIENT_SECRETS_FILE = "client_secrets.json"
 
 def optimize_thumbnail(thumbnail_path):
     optimized_path = "optimized_thumbnail.jpg"
@@ -33,16 +29,25 @@ def generate_video_specifics(name):
     return title, description, tags
 
 def get_authenticated_service():
-    # Authenticate using the service account
-    credentials = service_account.Credentials.from_service_account_file(
-    'client_secrets.json',
-    scopes=SCOPES
-    )
+    credentials = None
 
-    # Build the API client
-    youtube = build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
+    # Load the stored token if it exists
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, "rb") as token:
+            credentials = pickle.load(token)
 
-    return youtube
+    # If credentials are not valid or don't exist, get new ones
+    if not credentials or not credentials.valid:
+        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, SCOPES
+        )
+        credentials = flow.run_local_server(port=8080)
+
+        # Save the credentials for next time
+        with open(TOKEN_FILE, "wb") as token:
+            pickle.dump(credentials, token)
+
+    return googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
 
 def upload_video(name):
     title, description, tags = generate_video_specifics(name)
