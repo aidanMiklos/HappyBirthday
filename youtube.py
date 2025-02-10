@@ -41,7 +41,7 @@ def get_authenticated_service():
         flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, SCOPES
         )
-        credentials = flow.run_local_server(port=8080)
+        credentials = flow.run_console()
 
         # Save the credentials for next time
         with open(TOKEN_FILE, "wb") as token:
