@@ -3,50 +3,40 @@ name: Video Generation Script
 on:
   workflow_dispatch:  # Allows manual execution
   schedule:
-    - cron: "0 */4 * * *"  # Runs every 4 hours (6 times a day)
+    - cron: "0 */4 * * *"  # Runs every 4 hours
 
 jobs:
   run_script:
-    runs-on: ubuntu-latest  # Free GitHub-hosted runner
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Fetches repository files
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"  # Use a compatible version
+          python-version: "3.9"
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt  # Install any required packages
-          pip install python-dotenv        # Load environment variables from .env (if needed)
+          pip install -r requirements.txt
+          pip install python-dotenv
 
       - name: Set up FFmpeg
         uses: FedericoCarboni/setup-ffmpeg@v3
         with:
-          ffmpeg-version: 'release'  # You can specify a version like '4.4' or '5.0'
+          ffmpeg-version: 'release'
 
-      - name: Set up client_secrets.json
-        run: |
-            cat <<EOF > client_secrets.json
-            ${{ secrets.CLIENT_SECRETS_JSON }}
-            EOF
-
-      - name: Output client_secrets.json
-        run: cat client_secrets.json
-
-      - name: Decode token.pickle
-        run: |
-              echo "${{ secrets.TOKEN_PICKLE_B64 }}" | base64 --decode > token.pickle
-
-      - name: Inject API Keys
+      - name: Set environment variables
         env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}  # Load from GitHub Secrets
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python main.py  # Replace with your script filename
 
       - name: Upload Generated Audio Files (Optional)
         uses: actions/upload-artifact@v4
         with:
           name: audio-files
-          path: temp_audio/  # Uploads generated MP3 files
+          path: temp_audio/
